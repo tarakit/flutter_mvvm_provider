@@ -13,6 +13,7 @@ class HomeViewModel extends ChangeNotifier{
     }
 
     Future<dynamic> getProducts() async {
+      setProductList(ApiResponse.loading());
       await _productRepository.getProducts().then((productList) {
         print('success');
         setProductList(ApiResponse.complete(productList));

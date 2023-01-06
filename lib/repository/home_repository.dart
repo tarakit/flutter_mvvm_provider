@@ -10,8 +10,9 @@ class ProductRepository {
     try{
       print('before converting object ');
       dynamic response = await _apiService.getApiResponse(AppUrl.products);
+      // print('response ${ProductModel.fromJson(response)}');
       return response = ProductModel.fromJson(response);
-      print(ProductModel.fromJson(response));
+
 
     }catch(error){
       rethrow;
