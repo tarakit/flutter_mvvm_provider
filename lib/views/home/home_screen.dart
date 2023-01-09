@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_provider/data/response/api_response.dart';
-import 'package:flutter_mvvm_provider/models/product.dart';
 import 'package:flutter_mvvm_provider/view_models/home_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -16,11 +14,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var productViewModel = HomeViewModel();
+  var _scrollController = ScrollController();
+  var page = 1;
+  var data = [];
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    productViewModel.getProducts();
+    productViewModel.getProducts(1, 14);
+    _scrollController.addListener(onScrollToTheMaxBottom);
   }
 
   @override
@@ -36,26 +39,52 @@ class _HomeScreenState extends State<HomeScreen> {
                 switch(status){
                   case Status.LOADING: return Center(child: const CircularProgressIndicator());
                   case Status.COMPLETED:
-                    var length = products.apiResponse.data!.data!.length;
+
+                    data.addAll(products.apiResponse.data!.data!); // 14 + 14 = 28
+                    var length = data.length; // 28
                     // Pull To Refresh
                     return RefreshIndicator(
                       onRefresh: () async {
-                        productViewModel.getProducts();
+                        page = 1;
+                        data.clear();
+                        productViewModel.getProducts(page, 14);
                       },
                       child: ListView.builder(
-                          itemCount: length,
+                          controller: _scrollController,
+                          itemCount: isLoading ? length + 1 : length,
                           itemBuilder: (context, index){
-                            var product = products.apiResponse.data!.data![index].attributes;
-                            return ProductCard(product: product);
+                            if(index == length){
+                              return Center(child: CircularProgressIndicator());
+                            }else{
+                              var product = data![index].attributes; // 28
+                              return ProductCard(product: product);
+                            }
                           }),
                     );
                   default: return Center(child: Text('Default'));
                 }
               },
-
           ),
         )
     );
   }
+
+  void onScrollToTheMaxBottom() async{
+
+    if(_scrollController.position.pixels == _scrollController.position.maxScrollExtent){
+      if(page != 3){
+        setState(() {
+          isLoading = true;
+        });
+        page += 1;
+        await productViewModel.getProducts(page, 14);
+
+        setState(() {
+          isLoading = false;
+        });
+      }
+      }
+    }
+
 }
 

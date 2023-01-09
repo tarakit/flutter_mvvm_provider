@@ -24,6 +24,7 @@ class NetworkApiService {
     // print('status returnResponse ${response.body}');
     switch(response.statusCode){
       case 200:
+        // print(jsonDecode(response.body));
         return jsonDecode(response.body);
       case 400:
         throw BadRequestException('bad request');

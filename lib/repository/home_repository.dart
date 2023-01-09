@@ -6,11 +6,14 @@ class ProductRepository {
 
   final _apiService = NetworkApiService();
 
-  Future<ProductModel> getProducts() async {
+  Future<ProductModel> getProducts(page, limit) async {
     try{
       print('before converting object ');
-      dynamic response = await _apiService.getApiResponse(AppUrl.products);
-      // print('response ${ProductModel.fromJson(response)}');
+      var url = '${AppUrl.products}&pagination%5Bpage%5D=$page&pagination%5BpageSize%5D=$limit';
+      dynamic response = await _apiService
+          .getApiResponse(url);
+      print('url $url');
+
       return response = ProductModel.fromJson(response);
 
 
