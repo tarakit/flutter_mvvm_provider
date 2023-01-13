@@ -3,6 +3,7 @@ import 'package:flutter_mvvm_provider/view_models/home_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/response/status.dart';
+import '../add_product/add_screen.dart';
 import 'widgets/product_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 print('status $status');
 
                 switch(status){
-                  case Status.LOADING: return Center(child: const CircularProgressIndicator());
+                  case Status.LOADING: return const Center(child: CircularProgressIndicator());
                   case Status.COMPLETED:
 
                     data.addAll(products.apiResponse.data!.data!); // 14 + 14 = 28
@@ -65,7 +66,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               },
           ),
-        )
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => const AddProductScreen()));
+          },
+          child: Icon(Icons.add),
+        ),
     );
   }
 

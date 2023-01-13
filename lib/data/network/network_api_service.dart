@@ -2,11 +2,26 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_mvvm_provider/data/app_exception.dart';
-import 'package:flutter_mvvm_provider/res/app_url.dart';
+import 'package:flutter_mvvm_provider/models/image_response.dart';
 import 'package:http/http.dart' as http;
 
 class NetworkApiService {
   dynamic responseJson;
+
+  Future uploadImage(url, file) async{
+
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    request.files.add(await http.MultipartFile.fromPath('files', file));
+    // print('image data 222 $url');
+    var response = await request.send();
+    // print('image data response $response');
+    var res = await response.stream.bytesToString();
+    final decoded = json.decode(res);
+    var imageList = List<ImageResponse>.from(
+        decoded.map((image) => ImageResponse.fromJson(image)));
+    // print('image data ${imageList[0].toJson()}');
+    return imageList[0].toJson();
+  }
 
   Future<dynamic> getApiResponse(String url) async {
     try{
