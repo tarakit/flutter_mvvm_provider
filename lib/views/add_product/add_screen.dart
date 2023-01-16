@@ -29,18 +29,66 @@ class _AddProductScreenState extends State<AddProductScreen> {
           }, icon: const Icon(Icons.browse_gallery)),
         ],
       ),
-      body: ChangeNotifierProvider<HomeViewModel>(
-        create: (BuildContext ctx) => homeViewModel,
-        child: Consumer(
-          builder: (ctx, image, _) {
-            print('image url ${homeViewModel.imageResponse.data!.url}');
-            return Center(
-              child: imageFile == null ? Text('No Image') :
-              Image.file(imageFile, fit: BoxFit.cover,),
-            );
-          }
+      body: Container(
+        margin: EdgeInsets.only(left: 10, right: 10),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              ChangeNotifierProvider<HomeViewModel>(
+                create: (BuildContext ctx) => homeViewModel,
+                child: Consumer(
+                    builder: (ctx, image, _) {
+                      // print('image url ${homeViewModel.imageResponse.data!.url}');
+                      return Center(
+                        child: imageFile == null ? Image.network('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png',
+                        width: 150, height: 150) :
+                        Image.file(imageFile, fit: BoxFit.cover,width: 150, height: 150),
+                      );
+                    }
+                ),
+              ),
+              SizedBox(height: 10,),
+              TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Title'
+                )
+              ),
+              SizedBox(height: 10,),
+              TextField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Rating'
+                  )
+              ),
+              SizedBox(height: 10,),
+              TextField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Description'
+                  ),
+              ),
+              SizedBox(height: 10,),
+              TextField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Quantity'
+                  )
+              ),
+              SizedBox(height: 10,),
+              TextField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Price'
+                  )
+              ),
+              SizedBox(height: 10,),
+              ElevatedButton(onPressed: (){}, child: Text('Post'))
+            ],
+          ),
         ),
-      ),
+      )
     );
   }
 
