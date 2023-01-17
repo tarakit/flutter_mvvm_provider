@@ -20,6 +20,15 @@ class HomeViewModel extends ChangeNotifier{
       notifyListeners();
     }
 
+    Future postProduct(dataRequest) async {
+      await _productRepository.postProduct(dataRequest).then((value) => {
+
+      })
+      .onError((error, stackTrace) => {
+
+      });
+    }
+
     Future<dynamic> uploadImage(file) async {
       await _productRepository.uploadImage(file).then((image) => {
         setImageResponse(ApiResponse.complete(image))

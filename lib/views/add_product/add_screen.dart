@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_provider/data/response/status.dart';
+import 'package:flutter_mvvm_provider/models/product_request.dart';
 import 'package:flutter_mvvm_provider/view_models/home_view_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +17,13 @@ class AddProductScreen extends StatefulWidget {
 class _AddProductScreenState extends State<AddProductScreen> {
   var imageFile;
   var homeViewModel = HomeViewModel();
-  
+  var titleController = TextEditingController();
+  var ratingController = TextEditingController();
+  var descriptionController = TextEditingController();
+  var quantityController = TextEditingController();
+  var priceController = TextEditingController();
+  var thumbnailId;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,6 +47,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 create: (BuildContext ctx) => homeViewModel,
                 child: Consumer(
                     builder: (ctx, image, _) {
+                      if(homeViewModel.imageResponse.status == Status.COMPLETED)
+                          thumbnailId = homeViewModel.imageResponse.data!.id;
                       // print('image url ${homeViewModel.imageResponse.data!.url}');
                       return Center(
                         child: imageFile == null ? Image.network('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png',
@@ -50,6 +60,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),
               SizedBox(height: 10,),
               TextField(
+                controller: titleController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Title'
@@ -57,6 +68,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),
               SizedBox(height: 10,),
               TextField(
+                  controller: ratingController,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Rating'
@@ -64,6 +76,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),
               SizedBox(height: 10,),
               TextField(
+                  controller: descriptionController,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Description'
@@ -71,6 +84,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),
               SizedBox(height: 10,),
               TextField(
+                  controller: quantityController,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Quantity'
@@ -78,13 +92,25 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),
               SizedBox(height: 10,),
               TextField(
+                  controller: priceController,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Price'
                   )
               ),
               SizedBox(height: 10,),
-              ElevatedButton(onPressed: (){}, child: Text('Post'))
+              ElevatedButton(onPressed: (){
+                var dataRequest = DataRequest(
+                  title: titleController.text,
+                  description: descriptionController.text,
+                  rating: ratingController.text,
+                  quantity: quantityController.text,
+                  category: "1",
+                  thumbnail: thumbnailId.toString(),
+                  price: priceController.text
+                );
+                homeViewModel.postProduct(dataRequest);
+              }, child: Text('Post'))
             ],
           ),
         ),
