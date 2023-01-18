@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_mvvm_provider/data/response/api_response.dart';
 import 'package:flutter_mvvm_provider/models/image_response.dart';
 import 'package:flutter_mvvm_provider/models/product.dart';
+import 'package:flutter_mvvm_provider/models/product_response.dart';
 import 'package:flutter_mvvm_provider/repository/home_repository.dart';
 
 class HomeViewModel extends ChangeNotifier{
@@ -9,6 +10,12 @@ class HomeViewModel extends ChangeNotifier{
 
     ApiResponse<ProductModel> apiResponse = ApiResponse.loading();
     ApiResponse<ImageResponse> imageResponse = ApiResponse.loading();
+    ApiResponse<ProductResponse> productResponse = ApiResponse.loading();
+
+    setProductResponse(ApiResponse<ProductResponse> response){
+      productResponse = response;
+      notifyListeners();
+    }
 
     setImageResponse(ApiResponse<ImageResponse> response){
       imageResponse = response;
@@ -21,11 +28,13 @@ class HomeViewModel extends ChangeNotifier{
     }
 
     Future postProduct(dataRequest) async {
-      await _productRepository.postProduct(dataRequest).then((value) => {
-
+      await _productRepository.postProduct(dataRequest).then((value) {
+        setProductResponse(ApiResponse.complete(value));
       })
-      .onError((error, stackTrace) => {
-
+      .onError((error, stackTrace) {
+        print(stackTrace.toString());
+        print(error.toString());
+        setProductResponse(ApiResponse.error(error.toString()));
       });
     }
 

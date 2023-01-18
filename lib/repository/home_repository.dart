@@ -2,6 +2,7 @@ import 'package:flutter_mvvm_provider/data/network/network_api_service.dart';
 import 'package:flutter_mvvm_provider/models/image_response.dart';
 import 'package:flutter_mvvm_provider/models/product.dart';
 import 'package:flutter_mvvm_provider/models/product_request.dart';
+import 'package:flutter_mvvm_provider/models/product_response.dart';
 import 'package:flutter_mvvm_provider/res/app_url.dart';
 
 class ProductRepository {
@@ -12,7 +13,8 @@ class ProductRepository {
     try{
         var product = ProductRequest(data: dataRequest);
         var response = await _apiService.postApi(AppUrl.products, product.toJson());
-        // ជំពាក់ response
+        // សង response
+        return response = ProductResponse.fromJson(response);
     }catch(e){
       rethrow;
     }

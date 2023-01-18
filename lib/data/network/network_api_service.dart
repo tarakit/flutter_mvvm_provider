@@ -19,8 +19,8 @@ class NetworkApiService {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
-      return json.decode(await response.stream.bytesToString());
+      var res = await response.stream.bytesToString();
+      return json.decode(res);
     }
     else {
       print(response.reasonPhrase);

@@ -25,6 +25,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
   var thumbnailId;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -45,10 +52,25 @@ class _AddProductScreenState extends State<AddProductScreen> {
             children: [
               ChangeNotifierProvider<HomeViewModel>(
                 create: (BuildContext ctx) => homeViewModel,
-                child: Consumer(
+                child: Consumer<HomeViewModel>(
                     builder: (ctx, image, _) {
-                      if(homeViewModel.imageResponse.status == Status.COMPLETED)
-                          thumbnailId = homeViewModel.imageResponse.data!.id;
+                      if(homeViewModel.productResponse.status == Status.COMPLETED){
+                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Product Post Success'))
+                          );
+                        });
+                      }
+
+                      if(image.imageResponse.status == Status.COMPLETED) {
+                        thumbnailId = homeViewModel.imageResponse.data!.id;
+
+                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Upload Success'))
+                          );
+                        });
+                      }
                       // print('image url ${homeViewModel.imageResponse.data!.url}');
                       return Center(
                         child: imageFile == null ? Image.network('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png',
@@ -129,6 +151,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           imageFile = File(pickedFile.path);
           setState(() {
           });
+
           homeViewModel.uploadImage(pickedFile.path);
         }else
           print('image not picked');
