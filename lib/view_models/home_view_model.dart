@@ -27,11 +27,18 @@ class HomeViewModel extends ChangeNotifier{
       notifyListeners();
     }
 
+    Future putProduct(dataRequest, id) async {
+      await _productRepository.putProduct(dataRequest, id).then((value) {
+        setProductResponse(ApiResponse.complete(value));
+      }).onError((error, stackTrace) {
+        setProductResponse(ApiResponse.error(error.toString()));
+      });
+    }
+
     Future postProduct(dataRequest) async {
       await _productRepository.postProduct(dataRequest).then((value) {
         setProductResponse(ApiResponse.complete(value));
-      })
-      .onError((error, stackTrace) {
+      }).onError((error, stackTrace) {
         print(stackTrace.toString());
         print(error.toString());
         setProductResponse(ApiResponse.error(error.toString()));

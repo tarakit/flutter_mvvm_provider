@@ -9,6 +9,17 @@ class ProductRepository {
 
   final _apiService = NetworkApiService();
 
+  Future putProduct(dataRequest, id) async {
+    try{
+      var product = ProductRequest(data: dataRequest);
+      var response = await _apiService.putApi('${AppUrl.putProducts}/$id', product.toJson());
+      // សង response
+      return response = ProductResponse.fromJson(response);
+    }catch(e){
+      rethrow;
+    }
+  }
+
   Future postProduct(dataRequest) async {
     try{
         var product = ProductRequest(data: dataRequest);

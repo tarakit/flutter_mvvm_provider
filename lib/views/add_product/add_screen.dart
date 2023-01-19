@@ -2,13 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mvvm_provider/data/response/status.dart';
+import 'package:flutter_mvvm_provider/models/product.dart';
 import 'package:flutter_mvvm_provider/models/product_request.dart';
 import 'package:flutter_mvvm_provider/view_models/home_view_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class AddProductScreen extends StatefulWidget {
-  const AddProductScreen({Key? key}) : super(key: key);
+  AddProductScreen({Key? key, this.product, this.isUpdate = false}) : super(key: key);
+
+  var isUpdate;
+  Attributes? product;
 
   @override
   State<AddProductScreen> createState() => _AddProductScreenState();
@@ -26,9 +30,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
+    if(widget.isUpdate){
+      titleController.text = widget.product!.title!;
+      ratingController.text = widget.product!.rating!;
+      quantityController.text = widget.product!.quantity!;
+      descriptionController.text = widget.product!.description!;
+      priceController.text = widget.product!.price!;
+    }
   }
 
   @override
@@ -131,8 +140,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   thumbnail: thumbnailId.toString(),
                   price: priceController.text
                 );
+                if(widget.isUpdate)
+                    homeViewModel.putProduct(dataRequest, widget.product);
                 homeViewModel.postProduct(dataRequest);
-              }, child: Text('Post'))
+
+              }, child: widget.isUpdate ? Text('Update') : Text('Post'))
             ],
           ),
         ),
